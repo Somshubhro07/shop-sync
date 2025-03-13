@@ -1,45 +1,112 @@
 # ShopSync
 
-Welcome to **ShopSync**, a modern inventory and sales management system designed to streamline your shop operations. Built with React, Node.js, Express, and MongoDB, ShopSync provides an intuitive interface for managing products, tracking sales, and generating reports. This project is designed for small to medium-sized businesses looking to digitize their operations.
-
-## Table of Contents
-- [Features](#features)
-- [Tech Stack](#tech-stack)
-- [Installation](#installation)
-- [Usage](#usage)
-- [File Structure](#file-structure)
-- [API Endpoints](#api-endpoints)
-- [Contributing](#contributing)
-- [License](#license)
-- [Contact](#contact)
+**ShopSync** is a cutting-edge **inventory management** and **sales tracking** solution tailored for small to medium-sized businesses. Developed using React, Node.js, Express, and MongoDB, it empowers retailers and entrepreneurs to efficiently manage products, monitor sales, and generate insightful reports.
 
 ## Features
-- **User Authentication**: Secure login and signup with email verification.
-- **Inventory Management**: Add, update, and delete products with barcode generation and printing.
-- **Sales Tracking**: Monitor total sales and view recent transactions.
-- **Low Stock Alerts**: Get notified about products with low stock levels.
-- **Reporting**: Generate sales reports for better business insights.
-- **Responsive Design**: Optimized for both desktop and mobile devices.
-- **Customizable Dashboard**: Overview of key metrics with a user-friendly interface.
+- Secure user authentication with email verification
+- Comprehensive inventory management with barcode generation and printing
+- Real-time sales tracking with low stock alerts
+- Detailed business reporting for actionable insights
+- Responsive design optimized for both desktop and mobile devices
 
 ## Tech Stack
 - **Frontend**: React, Tailwind CSS
 - **Backend**: Node.js, Express
 - **Database**: MongoDB
-- **Authentication**: JWT (JSON Web Tokens)
-- **Barcode Generation**: bwip-js (alternative to canvas for compatibility)
-- **Other Tools**: Axios (HTTP requests), bcrypt (password hashing), nodemailer (email verification)
+- **Authentication**: JWT
+- **Barcode Generation**: bwip-js
 
 ## Installation
 
 ### Prerequisites
-- Node.js (v18.x or later recommended)
-- MongoDB (local or remote instance)
+- Node.js (v18.x or later)
+- MongoDB
 - npm or yarn
 - Git
 
 ### Steps
 1. **Clone the Repository**
    ```bash
-   git clone https://github.com/Somshubhro07/shop-sync.git
+   git clone https://github.com/Somshubhro07/ShopSync.git
    cd shop-sync
+   ```
+
+2. **Install Server Dependencies**
+   ```bash
+   cd server
+   npm install
+   ```
+
+3. **Install Client Dependencies**
+   ```bash
+   cd ../client
+   npm install
+   ```
+
+4. **Configure Environment Variables**
+   Create a `.env` file in the `server` directory:
+   ```text
+   PORT=5000
+   MONGO_URI=mongodb://localhost:27017/shopsync
+   JWT_SECRET=your_jwt_secret_key
+   SENDGRID_API_KEY=your_sendgrid_api_key
+   EMAIL_FROM=your_email@example.com
+   ```
+
+5. **Run the Application**
+   Start the server:
+   ```bash
+   cd server
+   node app.js
+   ```
+
+   Start the client (in a new terminal):
+   ```bash
+   cd client
+   npm start
+   ```
+
+   Visit [http://localhost:3000](http://localhost:3000).
+
+## Usage
+- **Login/Signup**: Access via `/`
+- **Dashboard**: View sales at `/dashboard`
+- **Inventory**: Manage products at `/inventory` (update/delete) or add at `/add-product`
+- **Sell**: Process sales at `/sell`
+- **Reporting**: Analyze data at `/reporting`
+
+## API Endpoints
+
+### Auth:
+- `POST /api/auth/signup` - Register
+- `POST /api/auth/login` - Login
+- `GET /api/auth/profile` - User profile (protected)
+
+### Products:
+- `POST /api/products` - Add product
+- `GET /api/products` - List products
+- `PUT /api/products/:id` - Update product
+- `DELETE /api/products/:id` - Delete product
+
+### Sales:
+- `GET /api/sales/dashboard` - Dashboard data
+
+## Contributing
+We welcome contributions from the community!
+
+1. Fork the repository
+2. Create a new branch (`git checkout -b feature-branch`)
+3. Commit your changes (`git commit -m "Add feature"`)
+4. Push to the branch (`git push origin feature-branch`)
+5. Open a pull request
+
+## License
+This project is licensed under the MIT License. See the LICENSE file for more details.
+
+## Contact
+Author: [Somshubro Guha]  
+Email: guha.somshubhro07@gmail.com  
+GitHub: [Somshubro Guha's GitHub Profile](https://github.com/Somshubhro07)
+
+## Keywords
+Inventory management, sales tracking, small business, medium business, React, Node.js, Express, MongoDB, JWT, barcode generation, business insights, responsive design
