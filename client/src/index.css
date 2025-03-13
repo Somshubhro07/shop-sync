@@ -1,0 +1,29 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --dark-black: #1A1A1A;
+  --gold-accent: #D4A017;
+  --saffron: #FF9933;
+  --light-cream: #F9F5EB;
+  --dark-brown: #3C2F2F;
+}
+
+body {
+  margin: 0;
+  font-family: 'Roboto', sans-serif;
+}
+
+.bg-light-cream { background-color: var(--light-cream); }
+.text-dark-brown { color: var(--dark-brown); }
+.border-gold-accent { border-color: var(--gold-accent); }
+.bg-saffron { background-color: var(--saffron); }
+
+/* Adjusted Gold Gradient for Text */
+.text-gold-accent {
+  background: linear-gradient(to right, #D4A017, #FFD700); /* Lighter end color for better readability */
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5); /* Add subtle shadow for contrast */
+}
