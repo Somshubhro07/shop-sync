@@ -27,7 +27,7 @@
 ### Steps
 1. **Clone the Repository**
    ```bash
-   git clone https://github.com/Somshubhro07/ShopSync.git
+   git clone https://github.com/Somshubhro07/shop-sync.git
    cd shop-sync
    ```
 
