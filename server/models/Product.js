@@ -6,8 +6,10 @@ const productSchema = new mongoose.Schema({
   description: { type: String },
   price: { type: Number, required: true },
   stock: { type: Number, required: true, default: 0 },
-  barcode: { type: String, required: true, unique: true }, // Store the barcode code (e.g., product ID)
-  barcodeImage: { type: String }, // Store the barcode image as base64
+  category: { type: String, required: true },
+  barcode: { type: String, required: true, unique: true },
+  barcodeImage: { type: String }, // Optional
+  image: { type: String },
   userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
   createdAt: { type: Date, default: Date.now },
 });

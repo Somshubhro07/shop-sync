@@ -9,6 +9,8 @@ const auth = require('../middleware/auth');
 router.post('/', auth, async (req, res) => {
   const { items, total, paymentMethod, customerPhone } = req.body;
   try {
+    console.log('Received sale data:', req.body); // Log the incoming data
+
     const sale = new Sale({
       items,
       total,
@@ -17,20 +19,28 @@ router.post('/', auth, async (req, res) => {
       createdBy: req.user.id,
     });
     await sale.save();
+    console.log('Sale saved successfully:', sale);
 
     // Update stock for each product
     for (const item of items) {
+      console.log(`Updating stock for product: ${item.name}, qty: ${item.qty}`);
       const product = await Product.findOne({ name: item.name, createdBy: req.user.id });
       if (product) {
+        if (product.stock < item.qty) {
+          return res.status(400).json({ message: `Insufficient stock for ${item.name}. Only ${product.stock} items left.` });
+        }
         product.stock -= item.qty;
         await product.save();
+        console.log(`Stock updated for ${item.name}: ${product.stock}`);
+      } else {
+        return res.status(404).json({ message: `Product ${item.name} not found.` });
       }
     }
 
     res.status(201).json(sale);
   } catch (error) {
     console.error('Error saving sale:', error);
-    res.status(500).json({ message: 'Server error', error });
+    res.status(500).json({ message: 'Server error', error: error.message });
   }
 });
 
@@ -64,6 +74,7 @@ router.get('/dashboard', auth, async (req, res) => {
   }
 });
 
+// Get Sales Report (for Reporting page)
 router.get('/report', auth, async (req, res) => {
   const { startDate, endDate } = req.query;
   try {
@@ -72,7 +83,7 @@ router.get('/report', auth, async (req, res) => {
     if (startDate && endDate) {
       query.createdAt = {
         $gte: new Date(startDate),
-        $lte: new Date(endDate),
+        $lte: new Date(new Date(endDate).setHours(23, 59, 59, 999)),
       };
     }
 
@@ -117,6 +128,25 @@ router.get('/report', auth, async (req, res) => {
     });
   } catch (error) {
     console.error('Error fetching report data:', error);
+    res.status(500).json({ message: 'Server error', error });
+  }
+});
+
+// Get All Sales (for detailed sales table in Reporting page)
+router.get('/', auth, async (req, res) => {
+  const { startDate, endDate } = req.query;
+  try {
+    const query = { createdBy: req.user.id };
+    if (startDate && endDate) {
+      query.createdAt = {
+        $gte: new Date(startDate),
+        $lte: new Date(new Date(endDate).setHours(23, 59, 59, 999)),
+      };
+    }
+    const sales = await Sale.find(query).sort({ createdAt: -1 });
+    res.status(200).json(sales);
+  } catch (error) {
+    console.error('Error fetching sales:', error);
     res.status(500).json({ message: 'Server error', error });
   }
 });

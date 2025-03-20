@@ -18,7 +18,9 @@ const Reporting = () => {
     endDate: '',
   });
   const [loading, setLoading] = useState(true);
+  const [salesDetails, setSalesDetails] = useState([]); // Add state for detailed sales
 
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   const fetchReportData = async () => {
     try {
       const token = localStorage.getItem('token');
@@ -27,11 +29,19 @@ const Reporting = () => {
         params.startDate = dateRange.startDate;
         params.endDate = dateRange.endDate;
       }
-      const response = await axios.get('http://localhost:5000/api/sales/report', {
+      const reportResponse = await axios.get('http://localhost:5000/api/sales/report', {
         headers: { Authorization: `Bearer ${token}` },
         params,
       });
-      setReportData(response.data);
+      setReportData(reportResponse.data);
+
+      // Fetch detailed sales for the table
+      const salesResponse = await axios.get('http://localhost:5000/api/sales', {
+        headers: { Authorization: `Bearer ${token}` },
+        params,
+      });
+      setSalesDetails(salesResponse.data);
+
       setLoading(false);
     } catch (error) {
       console.error('Error fetching report data:', error);
@@ -41,7 +51,7 @@ const Reporting = () => {
 
   useEffect(() => {
     fetchReportData();
-  }, [dateRange]);
+  }, [dateRange, fetchReportData]);
 
   const handleDateChange = (e) => {
     setDateRange({ ...dateRange, [e.target.name]: e.target.value });
@@ -118,7 +128,7 @@ const Reporting = () => {
           </div>
 
           {/* Top-Selling Products */}
-          <div className="bg-light-cream p-6 rounded-xl shadow-lg border-2 border-gold-accent">
+          <div className="bg-light-cream p-6 rounded-xl shadow-lg border-2 border-gold-accent mb-6">
             <h3 className="text-xl font-bold text-dark-brown mb-4">Top-Selling Products</h3>
             {reportData.topSellingProducts.length === 0 ? (
               <p className="text-gray-600">No sales data available.</p>
@@ -134,6 +144,38 @@ const Reporting = () => {
                       <p className="text-gray-600 text-sm">{product.qty} units sold</p>
                     </div>
                     <p className="text-gold-accent font-bold">₹{product.revenue.toFixed(2)}</p>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+
+          {/* Detailed Sales Table */}
+          <div className="bg-light-cream p-6 rounded-xl shadow-lg border-2 border-gold-accent">
+            <h3 className="text-xl font-bold text-dark-brown mb-4">Sales Details</h3>
+            {salesDetails.length === 0 ? (
+              <p className="text-gray-600">No sales recorded yet.</p>
+            ) : (
+              <div className="space-y-4">
+                {salesDetails.map((sale, index) => (
+                  <div key={index} className="p-3 bg-gray-100 rounded-lg">
+                    <p className="font-medium">Sale ID: {sale._id}</p>
+                    <p className="text-sm text-gray-600">Date: {new Date(sale.createdAt).toLocaleString()}</p>
+                    <p className="text-sm text-gray-600">Total: ₹{sale.total.toFixed(2)}</p>
+                    <p className="text-sm text-gray-600">
+                      Payment: Cash ₹{sale.paymentMethod.cash.toFixed(2)}, Card ₹{sale.paymentMethod.card.toFixed(2)}
+                    </p>
+                    {sale.customerPhone && (
+                      <p className="text-sm text-gray-600">Customer Phone: {sale.customerPhone}</p>
+                    )}
+                    <div className="mt-2">
+                      <p className="font-medium">Items:</p>
+                      {sale.items.map((item, i) => (
+                        <p key={i} className="text-sm">
+                          {item.name} (x{item.qty}) - ₹{(item.price * item.qty).toFixed(2)}
+                        </p>
+                      ))}
+                    </div>
                   </div>
                 ))}
               </div>

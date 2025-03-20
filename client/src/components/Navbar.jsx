@@ -7,7 +7,7 @@ const Navbar = ({ setPage }) => {
 
   const handleLogout = () => {
     localStorage.removeItem('token');
-    navigate('/'); // Redirect to landing page on logout
+    navigate('/');
   };
 
   return (
@@ -18,7 +18,7 @@ const Navbar = ({ setPage }) => {
           <li key={item} className="mb-3">
             <Link
               to={item === 'Home' ? '/dashboard' : `/${item.toLowerCase()}`}
-              onClick={() => setPage && setPage(item.toLowerCase())} // Keep setPage for compatibility
+              onClick={() => setPage && setPage(item.toLowerCase())}
               className="p-3 text-lg hover:bg-gold-accent hover:bg-opacity-20 rounded-lg w-full text-left transition-all duration-300 block"
             >
               {item}

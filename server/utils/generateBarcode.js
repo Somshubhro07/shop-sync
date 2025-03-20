@@ -1,25 +1,26 @@
 // server/utils/generateBarcode.js
-const { createCanvas } = require('canvas');
-const Barcode = require('barcode');
+const bwipjs = require('bwip-js');
 
-const generateBarcode = async (code) => {
-  const canvas = createCanvas();
-  const barcode = new Barcode('code128', {
-    data: code, // The barcode code (e.g., product ID)
-    width: 200,
-    height: 50,
-    canvas: canvas,
-  });
-
+const generateBarcode = (text) => {
   return new Promise((resolve, reject) => {
-    barcode.saveImage((err) => {
-      if (err) {
-        reject(err);
-      } else {
-        const base64Image = canvas.toDataURL('image/png'); // Convert to base64
-        resolve(base64Image);
+    bwipjs.toBuffer(
+      {
+        bcid: 'code128', // Barcode type
+        text: text, // Text to encode
+        scale: 3, // 3x scaling factor
+        height: 10, // Bar height, in millimeters
+        includetext: true, // Show human-readable text
+        textxalign: 'center', // Center text
+      },
+      (err, buffer) => {
+        if (err) {
+          reject(err);
+        } else {
+          const base64 = buffer.toString('base64');
+          resolve(`data:image/png;base64,${base64}`);
+        }
       }
-    });
+    );
   });
 };
 
